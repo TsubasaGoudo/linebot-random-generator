@@ -2,3 +2,4 @@
 .env
 __pycache__/
 *.pyc
+LINE_BOT_ADMIN_URLS.md
