@@ -112,7 +112,14 @@ def handle_message(event):
     received_text = event.message.text.strip()
 
     # メニュー表示
-    if received_text in ["メニュー", "menu", "MENU", "一覧"]:
+    if received_text in [
+    "メニュー",
+    "menu",
+    "MENU",
+    "一覧",
+    "テーマ一覧",
+]:
+
         reply_text = create_theme_menu()
 
     # テーマ番号を受信
