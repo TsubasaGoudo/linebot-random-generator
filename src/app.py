@@ -15,14 +15,14 @@ from linebot.v3.messaging import (
 )
 from linebot.v3.webhooks import MessageEvent, TextMessageContent, PostbackEvent
 
-from generator import THEMES, generate_text
+from .generator import THEMES, generate_text
 
 load_dotenv()
 CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
 CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 
 if not CHANNEL_SECRET or not CHANNEL_ACCESS_TOKEN:
-    raise RuntimeError("LINE認証情報が設定されていません。")
+    raise RuntimeError("LINE認証情報が設定されていません．")
 
 app = Flask(__name__)
 configuration = Configuration(access_token=CHANNEL_ACCESS_TOKEN)
@@ -63,14 +63,14 @@ def create_theme_flex_message():
                 "contents": [
                     {
                         "type": "text",
-                        "text": f"テーマ {start_index + 1}〜{start_index + len(category_themes)}",
+                        "text": f"ネタ {start_index + 1}〜{start_index + len(category_themes)}",
                         "color": "#FFFFFF",
                         "weight": "bold",
                         "size": "xl",
                     },
                     {
                         "type": "text",
-                        "text": "横にスワイプして選択できます",
+                        "text": "横にスワイプして選べます",
                         "color": "#DAD3FF",
                         "size": "xs",
                         "margin": "sm",
@@ -87,7 +87,7 @@ def create_theme_flex_message():
         })
 
     return FlexMessage(
-        alt_text="テーマ一覧です。横にスワイプしてテーマを選んでください。",
+        alt_text="ネタ一覧です．横にスワイプしてネタを選んでください．",
         contents=FlexContainer.from_dict({"type": "carousel", "contents": bubbles}),
     )
 
@@ -116,16 +116,16 @@ def callback():
 def handle_message(event):
     received_text = event.message.text.strip()
 
-    if received_text in ["メニュー", "menu", "MENU", "一覧", "テーマ一覧", "テーマを選ぶ"]:
+    if received_text in ["メニュー", "menu", "MENU", "一覧", "ネタ一覧", "ネタを選ぶ", "テーマ一覧", "テーマを選ぶ"]:
         reply_message = create_theme_flex_message()
     elif received_text.isdecimal():
         theme_number = int(received_text)
         if 1 <= theme_number <= len(THEMES):
             reply_message = TextMessage(text=generate_text(theme_number))
         else:
-            reply_message = TextMessage(text=f"テーマ番号は1〜{len(THEMES)}で指定してください。")
+            reply_message = TextMessage(text=f"ネタ番号は1〜{len(THEMES)}で指定してください．")
     else:
-        reply_message = TextMessage(text="画面下のリッチメニューからテーマ一覧を開けます。")
+        reply_message = TextMessage(text="画面下のリッチメニューからネタ一覧を開けます．")
 
     with ApiClient(configuration) as api_client:
         MessagingApi(api_client).reply_message(
@@ -147,7 +147,7 @@ def handle_postback(event):
     if 1 <= theme_number <= len(THEMES):
         reply_text = generate_text(theme_number)
     else:
-        reply_text = "選択されたテーマが見つかりませんでした。"
+        reply_text = "選択されたネタが見つかりませんでした．"
 
     with ApiClient(configuration) as api_client:
         MessagingApi(api_client).reply_message(
